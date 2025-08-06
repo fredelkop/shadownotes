@@ -1,0 +1,35 @@
+<!-- callback.html: Google Redirect Callback Page -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ShadowNotes – OAuth Callback</title>
+  <style>
+    body { font-family: Arial, sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; }
+    pre { background: #f4f4f4; padding: 1em; border-radius: 4px; }
+  </style>
+</head>
+<body>
+  <h1>Processing Login...</h1>
+  <pre id="result">Waiting for response...</pre>
+
+  <script>
+    // After Google redirects here, backend returns JSON with temp_token and address
+    fetch(window.location.href, { credentials: 'include' })
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById('result').innerText = JSON.stringify(data, null, 2);
+        // Optionally, store data.temp_token in localStorage and proceed to zkLogin flow
+        if (data.temp_token) {
+          localStorage.setItem('temp_token', data.temp_token);
+          // Redirect to your app main page
+          setTimeout(() => window.location.href = '/', 2000);
+        }
+      })
+      .catch(err => {
+        document.getElementById('result').innerText = 'Error: ' + err;
+      });
+  </script>
+</body>
+</html>
